@@ -26,9 +26,9 @@ from gi.repository import GLib, Gst, GstRtspServer
 Gst.init(None)
 
 mainloop = GLib.MainLoop()
-
+address='192.168.1.28'
 server = GstRtspServer.RTSPServer.new()
-server.set_address('192.168.1.28')
+server.set_address(address)
 server.set_service('8554')
 
 mounts = server.get_mount_points()
@@ -43,5 +43,5 @@ mounts.add_factory("/test", factory)
 
 server.attach(None)
 
-print("stream ready at rtsp://127.0.0.1:8554/test")
+print("stream ready at "+address+":8554/test")
 mainloop.run()
