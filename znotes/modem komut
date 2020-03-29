@@ -1,0 +1,43 @@
+
+
+
+
+
+sudo apt-get update 
+sudo apt-get install usbutils 
+sudo apt-get install usb-modeswitch 
+sudo apt-get install wvdial 
+sudo apt-get install ppp 
+
+
+
+
+Bus 001 Device 002: ID 12d1:1f01 Huawei Technologies Co., Ltd. E353/E3131 (Mass storage mode)
+ sudo vim /lib/udev/rules.d/40-usb_modeswitch.rules
+
+SUBSYSTEM=="tty", ATTRS{idVendor}=="12d1", ATTRS{idProduct}=="1f01", SYMLINK+="modem"
+sudo touch /etc/usb_modeswitch.d/12d1:1f01
+
+usb_modeswitch -c /etc/usb_modeswitch.d/12d1:1f01
+
+
+
+
+
+
+
+
+
+[Dialer 3gconnect]
+Init1 = ATZ
+Init2 = ATQ0 V1 E1 S0=0 &C1 &D2 +FCLASS=0
+Init3 = AT+CGDCONT=1,"IP","internet"
+Stupid Mode = 1
+Modem Type = Analog Modem
+ISDN = 0
+Phone = *99#
+Modem = /dev/ttyUSB0
+Username = dummy
+Password = dummy
+New PPPD = yes
+Baud = 460800
