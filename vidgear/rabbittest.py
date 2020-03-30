@@ -21,9 +21,9 @@ channel = connection.channel()
 channel.queue_declare(queue='camFromBoard')
 
 stream = cv2.VideoCapture("/dev/video1")
-stream.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920);
-stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
-stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
+# stream.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920);
+# stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
+# stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 while True:
