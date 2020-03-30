@@ -15,7 +15,7 @@ stream = cv2.VideoCapture(0)  # Open any video stream
 options = {'flag': 0, 'copy': False, 'track': False}
 
 # change following IP address '192.168.x.xxx' with client's IP address
-server = NetGear(address='192.168.196.80', port='5454', protocol='tcp', pattern=0, receive_mode=False, logging=True,
+server = NetGear(address='192.168.195.19', port='5672', protocol='tcp', pattern=0, receive_mode=False, logging=True,
                  **options)  # Define netgear server at your system IP address.
 
 # infinite loop until [Ctrl+C] is pressed

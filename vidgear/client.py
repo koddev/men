@@ -3,7 +3,7 @@ import cv2
 
 #define netgear client with `receive_mode = True` and default settings
 options = {'flag' : 0, 'copy' : False, 'track' : False}
-client = NetGear(address = '192.168.196.80', port = '5454', protocol = 'tcp',  pattern = 0, receive_mode = True, logging = True, **options)
+client = NetGear(address = '192.168.196.61', port = '5454', protocol = 'tcp',  pattern = 0, receive_mode = True, logging = True, **options)
 
 # infinite loop
 while True:
