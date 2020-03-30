@@ -36,7 +36,7 @@ while True:
 
         result, encimg = cv2.imencode('.jpg', frame, encode_param)
         imgnp = bytearray(encimg)
-        encoded_string = base64.b64encode(encimg)
+        encoded_string = str(base64.b64encode(encimg))
         now = datetime.now().isoformat()
         cam = CamFrameClass(now, encoded_string)
         #
