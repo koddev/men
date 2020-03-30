@@ -33,7 +33,7 @@ loopAsync = asyncio.get_event_loop()
 def startServer():
     Gst.init(None)
 
-    address = '192.168.1.25'
+    address = '192.168.196.80'
     server = GstRtspServer.RTSPServer.new()
     server.set_address(address)
     server.set_service('8554')
@@ -55,15 +55,14 @@ def startServer():
 
     # factory.set_launch('( device=/dev/video1 ! video/x-raw,format=YUY2,width=1280,height=720,framerate=10/1 ! videoconvert ! x264enc ! video/x-h264,profile=high ! rtph264pay pt=96 name=pay0 )')
     # factory.set_launch('( device=/dev/video1 ! ffmpegcolorspace ! video/x-raw,width=1920,framerate=5/1 ! ffmpegcolorspace ! directdrawsink -v )')
-    # factory.set_launch('( filesrc location=istiklal1.mp4 ! qtdemux ! queue ! rtph264pay pt=96 name=pay0 )')
-    factory.set_launch(
-        '(device=/dev/video0 ! video/x-raw-yuy,width=1280,height=720,framerate=10/1 ! videoconvert ! rtph264pay name=pay0 pt=96)')
+    factory.set_launch('( filesrc location=istiklal1.mp4 ! qtdemux ! queue ! rtph264pay pt=96 name=pay0 )')
+    #factory.set_launch('(device=/dev/video0 ! video/x-raw-yuy,width=1280,height=720,framerate=10/1 ! videoconvert ! rtph264pay name=pay0 pt=96)')
 
     mounts.add_factory("/test", factory)
 
     server.attach(None)
 
-    print("stream ready at " + address + ":8554/test")
+    print("stream ready at rtsp://user:pass@" + address + ":8554/test")
 
     mainloop.run()
 
