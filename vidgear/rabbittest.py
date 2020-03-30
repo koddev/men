@@ -20,7 +20,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.195.19')
 channel = connection.channel()
 channel.queue_declare(queue='camFromBoard')
 
-stream = cv2.VideoCapture(0)
+stream = cv2.VideoCapture("/dev/video1:YUY2:1920x1080:5/1")
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 while True:
 
