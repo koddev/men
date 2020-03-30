@@ -21,6 +21,10 @@ channel = connection.channel()
 channel.queue_declare(queue='camFromBoard')
 
 stream = cv2.VideoCapture("/dev/video1")
+stream.set(cv2.CV_CAP_PROP_FRAME_WIDTH, 1920);
+stream.set(cv2.CV_CAP_PROP_FRAME_HEIGHT, 1080);
+stream.set(cv2.CV_CAP_PROP_FPS, 5)
+
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 while True:
 
@@ -32,7 +36,7 @@ while True:
 
         result, encimg = cv2.imencode('.jpg', frame, encode_param)
         imgnp = bytearray(encimg)
-        encoded_string = str(base64.b64encode(encimg))
+        encoded_string = base64.b64encode(encimg)
         now = datetime.now().isoformat()
         cam = CamFrameClass(now, encoded_string)
         #
@@ -41,7 +45,7 @@ while True:
 
         channel.basic_publish(exchange='', routing_key='camFromBoard', body=jsonStr)
 
-        time.sleep(0.5)
+        time.sleep(0.1)
     except KeyboardInterrupt:
         # break the infinite loop
         break
