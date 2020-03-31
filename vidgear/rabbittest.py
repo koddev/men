@@ -20,7 +20,11 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.195.19')
 channel = connection.channel()
 channel.queue_declare(queue='camFromBoard')
 
-stream = cv2.VideoCapture("/dev/video1")
+cap = cv2.VideoCapture("/dev/video1")
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920);
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080);
+cap.set(cv2.CAP_PROP_FPS,5)
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920);
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
@@ -29,7 +33,7 @@ encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 while True:
 
     try:
-        (g,frame) = stream.read()
+        (g,frame) = cap.read()
 
         if frame is None:
             break
@@ -39,7 +43,7 @@ while True:
         encoded_string = str(base64.b64encode(encimg))
         now = datetime.now().isoformat()
         cam = CamFrameClass(now, encoded_string)
-        #
+
         jsonStr = json.dumps(cam.__dict__)
         print('sending:'+now)
 
