@@ -55,11 +55,11 @@ git config --global user.name "koddev"
 
 
 
-sudo apt-get update 
-sudo apt-get install usbutils 
-sudo apt-get install usb-modeswitch 
-sudo apt-get install wvdial 
-sudo apt-get install ppp 
+sudo apt-get update
+sudo apt-get install usbutils
+sudo apt-get install usb-modeswitch
+sudo apt-get install wvdial
+sudo apt-get install ppp
 
 
 
