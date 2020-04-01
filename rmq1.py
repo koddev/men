@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 import base64
 import time
-
+import os
 
 
 
@@ -15,26 +15,29 @@ class CamFrameClass:
         self.image = image
 
 
-addressIp='62.244.197.146'
-#addressIp='192.168.116.20'
+# addressIp='62.244.197.146'
+addressIp='192.168.116.20'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
 channel.queue_declare(queue='cam1')
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(2)
 
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920);
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080);
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
+# cap.set(cv2.CV_CAP_PROP_FPS, 5)
+
 # cap.set(cv2.CAP_PROP_FPS,5)
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920);
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
 averageFps = 0
 frameCount=0
 startTime=time.time()
+cachePath="cache/aa.jpg"
 while True:
 
     try:
@@ -42,14 +45,29 @@ while True:
         # height, width, depth = frame.shape
         if frame is None:
             break
-        # half = cv2.resize(frame, (0, 0), fx=0.6, fy=0.6)
-        # half = cv2.resize(frame, (1280, 720))
-        result, encimg = cv2.imencode('.jpg', frame, encode_param)
-        # imgnp = bytearray(encimg)
-        if not result:
-            continue
+        if not cap.isOpened():
+            break
 
-        encoded_string = str(base64.b64encode(encimg))
+        # width,height = cap.get(cv2.CAP_PROP_FRAME_WIDTH),cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+        # print(str(width) + " " + str(height))
+
+
+        # half = cv2.resize(frame, (1280, 720))
+        # result, encimg = cv2.imencode('.jpg', frame, encode_param)
+        half = cv2.resize(frame, (1280, 720))
+        cv2.imwrite(cachePath,half,encode_param)
+        img = cv2.imread(cachePath)
+        imgSize=os.path.getsize(cachePath)
+        os.remove(cachePath)
+        # exit()
+        height, width = img.shape[:2]
+        print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
+
+        # imgnp = bytearray(encimg)
+
+
+        encoded_string = str(base64.b64encode(img))
         now = datetime.now().isoformat()
         camClass = CamFrameClass(now, encoded_string)
 
