@@ -58,11 +58,12 @@ while True:
         half = cv2.resize(frame, (1280, 720))
         cv2.imwrite(cachePath,half,encode_param)
         img = cv2.imread(cachePath)
-        imgSize=os.path.getsize(cachePath)
+        # imgSize=os.path.getsize(cachePath)
         os.remove(cachePath)
         # exit()
         height, width = img.shape[:2]
-        print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
+        print(str(width) + " " + str(height) + " " )
+        #+ str(imgSize/1024) + " KB")
 
         # imgnp = bytearray(encimg)
 
