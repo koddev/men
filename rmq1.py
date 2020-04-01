@@ -15,8 +15,10 @@ class CamFrameClass:
         self.image = image
 
 
+# addressIp='62.244.197.146'
+addressIp='192.168.116.20'
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('62.244.197.146',5550))
+connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
 channel.queue_declare(queue='cam1')
 
@@ -30,6 +32,9 @@ cap = cv2.VideoCapture(0)
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+averageFps = 0
+frameCount=0
+startTime=time.time()
 while True:
 
     try:
@@ -37,22 +42,40 @@ while True:
         # height, width, depth = frame.shape
         if frame is None:
             break
-        half = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-
+        # half = cv2.resize(frame, (0, 0), fx=0.8, fy=0.8)
+        half = cv2.resize(frame, (1280, 720))
         result, encimg = cv2.imencode('.jpg', half, encode_param)
         # imgnp = bytearray(encimg)
+        if not result:
+            continue
+
         encoded_string = str(base64.b64encode(encimg))
         now = datetime.now().isoformat()
-        cam = CamFrameClass(now, encoded_string)
+        camClass = CamFrameClass(now, encoded_string)
 
-        jsonStr = json.dumps(cam.__dict__)
-        print('sending:'+now )
+        jsonStr = json.dumps(camClass.__dict__)
+        # print('sending:'+now )
         # + " " + str(width) + "X" + str(height)
 
-
+        _startTime=time.time()
         channel.basic_publish(exchange='', routing_key='cam1', body=jsonStr)
+        frameCount=frameCount+1
+        _diffTime=time.time()-_startTime
+        waitTime = 0.2-_diffTime
+        if waitTime>0:
+            time.sleep(waitTime)
 
-        time.sleep(0.2)
+        diffTime = time.time() - startTime
+
+        if diffTime >=5:
+            fps=frameCount/5
+            print("fps:" + str(fps))
+            startTime = time.time()
+            frameCount=0
+
+
+
+
     except KeyboardInterrupt:
         # break the infinite loop
         break
