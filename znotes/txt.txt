@@ -1,4 +1,16 @@
 
+
+178.242.27.59
+
+
+
+
+
+
+
+
+
+
 edgetpu_detect \
 --source /dev/video1:MJPG:1920x1080:60/1  \
 --model /home/mendel/demo_files/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite

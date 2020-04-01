@@ -42,8 +42,8 @@ while True:
         # height, width, depth = frame.shape
         if frame is None:
             break
-        # half = cv2.resize(frame, (0, 0), fx=0.8, fy=0.8)
-        half = cv2.resize(frame, (1280, 720))
+        half = cv2.resize(frame, (0, 0), fx=0.6, fy=0.6)
+        # half = cv2.resize(frame, (1280, 720))
         result, encimg = cv2.imencode('.jpg', half, encode_param)
         # imgnp = bytearray(encimg)
         if not result:
