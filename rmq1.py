@@ -64,7 +64,7 @@ while True:
         # print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
 
         # half = cv2.resize(frame, (1280, 720))
-        result, encimg = cv2.imencode('.jpg', half, encode_param)
+        result, encimg = cv2.imencode('.jpg', frame, encode_param)
         imgSize =  sys.getsizeof(encimg)
         # height, width = half.shape[:2]
         # print(str(width) + " " + str(height) + " " + str(imgSize / 1024) + " KB")
