@@ -6,7 +6,7 @@ from datetime import datetime
 import base64
 import time
 import os
-
+import sys
 
 
 class CamFrameClass:
@@ -33,7 +33,7 @@ cap = cv2.VideoCapture(1)
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
 averageFps = 0
 frameCount=0
 startTime=time.time()
@@ -55,19 +55,24 @@ while True:
 
         # half = cv2.resize(frame, (1280, 720))
         # result, encimg = cv2.imencode('.jpg', frame, encode_param)
+        # size = str(sys.getsizeof(data))
+        # cv2.imwrite(cachePath,half,encode_param)
+        # img = cv2.imread(cachePath)
+        # imgSize=os.path.getsize(cachePath)
+        # os.remove(cachePath)
+        # height, width = img.shape[:2]
+        # print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
+
         half = cv2.resize(frame, (1280, 720))
-        cv2.imwrite(cachePath,half,encode_param)
-        img = cv2.imread(cachePath)
-        imgSize=os.path.getsize(cachePath)
-        os.remove(cachePath)
-        # exit()
-        height, width = img.shape[:2]
-        print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
+        result, encimg = cv2.imencode('.jpg', half, encode_param)
+        imgSize =  sys.getsizeof(encimg)
+        height, width = half.shape[:2]
+        print(str(width) + " " + str(height) + " " + str(imgSize / 1024) + " KB")
 
         # imgnp = bytearray(encimg)
 
 
-        encoded_string = str(base64.b64encode(img))
+        encoded_string = str(base64.b64encode(encimg))
         now = datetime.now().isoformat()
         camClass = CamFrameClass(now, encoded_string)
 
