@@ -20,7 +20,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.116.20',
 channel = connection.channel()
 channel.queue_declare(queue='cam1')
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(1)
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920);
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080);
