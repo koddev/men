@@ -63,11 +63,11 @@ while True:
         # height, width = img.shape[:2]
         # print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
 
-        half = cv2.resize(frame, (1280, 720))
+        # half = cv2.resize(frame, (1280, 720))
         result, encimg = cv2.imencode('.jpg', half, encode_param)
         imgSize =  sys.getsizeof(encimg)
-        height, width = half.shape[:2]
-        print(str(width) + " " + str(height) + " " + str(imgSize / 1024) + " KB")
+        # height, width = half.shape[:2]
+        # print(str(width) + " " + str(height) + " " + str(imgSize / 1024) + " KB")
 
         # imgnp = bytearray(encimg)
 
