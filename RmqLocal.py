@@ -49,7 +49,7 @@ while True:
 
         channel.basic_publish(exchange='', routing_key='cam1', body=jsonStr)
 
-        time.sleep(0.1)
+        time.sleep(0.2)
     except KeyboardInterrupt:
         # break the infinite loop
         break
