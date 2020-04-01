@@ -15,14 +15,14 @@ class CamFrameClass:
         self.image = image
 
 
-# addressIp='62.244.197.146'
-addressIp='192.168.116.20'
+addressIp='62.244.197.146'
+# addressIp='192.168.116.20'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
 channel.queue_declare(queue='cam1')
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(1)
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
