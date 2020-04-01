@@ -15,8 +15,8 @@ class CamFrameClass:
         self.image = image
 
 
-addressIp='62.244.197.146'
-# addressIp='192.168.116.20'
+# addressIp='62.244.197.146'
+addressIp='192.168.116.20'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
