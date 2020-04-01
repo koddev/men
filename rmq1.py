@@ -37,7 +37,7 @@ encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
 averageFps = 0
 frameCount=0
 startTime=time.time()
-cachePath="cache/aa.jpg"
+cachePath="~/code/men/cache/aa.jpg"
 while True:
 
     try:
@@ -58,12 +58,11 @@ while True:
         half = cv2.resize(frame, (1280, 720))
         cv2.imwrite(cachePath,half,encode_param)
         img = cv2.imread(cachePath)
-        # imgSize=os.path.getsize(cachePath)
+        imgSize=os.path.getsize(cachePath)
         os.remove(cachePath)
         # exit()
         height, width = img.shape[:2]
-        print(str(width) + " " + str(height) + " " )
-        #+ str(imgSize/1024) + " KB")
+        print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
 
         # imgnp = bytearray(encimg)
 
