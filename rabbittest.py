@@ -16,7 +16,7 @@ class CamFrameClass:
 
 
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('62.244.197.146',5550))
+connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.116.20',5550))
 channel = connection.channel()
 channel.queue_declare(queue='camFromBoard')
 
