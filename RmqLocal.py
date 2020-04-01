@@ -45,7 +45,7 @@ while True:
         cam = CamFrameClass(now, encoded_string)
 
         jsonStr = json.dumps(cam.__dict__)
-        # print('sending:'+now)
+        print('sending:'+now)
 
         channel.basic_publish(exchange='', routing_key='camFromBoard', body=jsonStr)
 
