@@ -20,7 +20,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.116.20',
 channel = connection.channel()
 channel.queue_declare(queue='cam1')
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920);
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080);
@@ -34,18 +34,21 @@ while True:
 
     try:
         (g,frame) = cap.read()
-
+        # height, width, depth = frame.shape
         if frame is None:
             break
+        half = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
 
-        result, encimg = cv2.imencode('.jpg', frame, encode_param)
-        imgnp = bytearray(encimg)
+        result, encimg = cv2.imencode('.jpg', half, encode_param)
+        # imgnp = bytearray(encimg)
         encoded_string = str(base64.b64encode(encimg))
         now = datetime.now().isoformat()
         cam = CamFrameClass(now, encoded_string)
 
         jsonStr = json.dumps(cam.__dict__)
-        print('sending:'+now)
+        print('sending:'+now )
+        # + " " + str(width) + "X" + str(height)
+
 
         channel.basic_publish(exchange='', routing_key='cam1', body=jsonStr)
 
