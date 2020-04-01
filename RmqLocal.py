@@ -47,7 +47,7 @@ while True:
         jsonStr = json.dumps(cam.__dict__)
         print('sending:'+now)
 
-        channel.basic_publish(exchange='', routing_key='camFromBoard', body=jsonStr)
+        channel.basic_publish(exchange='', routing_key='cam1', body=jsonStr)
 
         time.sleep(0.1)
     except KeyboardInterrupt:
