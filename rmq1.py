@@ -20,7 +20,7 @@ addressIp='62.244.197.146'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
-channel.queue_declare(queue='cam1')
+channel.queue_declare(queue='cam2')
 
 cap = cv2.VideoCapture(2)
 
@@ -37,7 +37,7 @@ encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
 averageFps = 0
 frameCount=0
 startTime=time.time()
-cachePath="~/code/men/cache/aa.jpg"
+# cachePath="~/code/men/cache/aa.jpg"
 while True:
 
     try:
@@ -81,7 +81,7 @@ while True:
         # + " " + str(width) + "X" + str(height)
 
         _startTime=time.time()
-        channel.basic_publish(exchange='', routing_key='cam1', body=jsonStr)
+        channel.basic_publish(exchange='', routing_key='cam2', body=jsonStr)
         frameCount=frameCount+1
         _diffTime=time.time()-_startTime
         waitTime = 0.1-_diffTime
