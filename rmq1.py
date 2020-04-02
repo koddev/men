@@ -24,7 +24,7 @@ channel.queue_declare(queue='cam2')
 
 # cap = cv2.VideoCapture(1)
 # vidPath="/home/cc/video/k1.avi"
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(1)
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
