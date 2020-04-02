@@ -15,16 +15,16 @@ class CamFrameClass:
         self.image = image
 
 
-addressIp='62.244.197.146'
-# addressIp='192.168.116.20'
+# addressIp='62.244.197.146'
+addressIp='192.168.116.20'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
-channel.queue_declare(queue='cam2')
+channel.queue_declare(queue='cam3')
 
 # cap = cv2.VideoCapture(1)
-# vidPath="/home/cc/video/k1.avi"
-cap = cv2.VideoCapture(1)
+vidPath="/home/cc/video/k3.avi"
+cap = cv2.VideoCapture(vidPath)
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
@@ -38,6 +38,7 @@ cap = cv2.VideoCapture(1)
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
 averageFps = 0
 frameCount=0
+frameCount2=0
 startTime=time.time()
 # cachePath="~/code/men/cache/aa.jpg"
 while True:
@@ -50,6 +51,12 @@ while True:
         if not cap.isOpened():
             break
 
+
+        frameCount2 = frameCount2 + 1
+        if frameCount2 % 4 !=0:
+            continue
+
+        frameCount = frameCount + 1
         # width,height = cap.get(cv2.CAP_PROP_FRAME_WIDTH),cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
         # print(str(width) + " " + str(height))
@@ -67,7 +74,7 @@ while True:
 
         # half = cv2.resize(frame, (1280, 720))
         result, encimg = cv2.imencode('.jpg', frame, encode_param)
-        imgSize =  sys.getsizeof(encimg)
+        # imgSize =  sys.getsizeof(encimg)
         # height, width = half.shape[:2]
         # print(str(width) + " " + str(height) + " " + str(imgSize / 1024) + " KB")
 
@@ -83,12 +90,12 @@ while True:
         # + " " + str(width) + "X" + str(height)
 
         _startTime=time.time()
-        channel.basic_publish(exchange='', routing_key='cam2', body=jsonStr)
-        frameCount=frameCount+1
+        channel.basic_publish(exchange='', routing_key='cam3', body=jsonStr)
+
         _diffTime=time.time()-_startTime
-        waitTime = 0.05-_diffTime
-        if waitTime>0:
-            time.sleep(waitTime)
+        # waitTime = 0.1-_diffTime
+        # if waitTime>0:
+        #     time.sleep(waitTime)
 
         diffTime = time.time() - startTime
 
@@ -97,6 +104,8 @@ while True:
             print("fps:" + str(fps))
             startTime = time.time()
             frameCount=0
+
+
 
 
     except KeyboardInterrupt:

@@ -30,6 +30,7 @@ apt-get install dosfstools
 
 v4l2-ctl --list-formats-ext --device /dev/video1
 
+ffmpeg -i input.mp4 -c:v libx264 -c:a libmp3lame -b:a 384K output.avi
 
 
 sudo gst-launch-1.0 v4l2src device=/dev/video1 ! video/x-raw,framerate=20/1,width=640,height=480 ! videoconvert ! jpegenc ! udpsink host=192.168.0.89 port=5000
