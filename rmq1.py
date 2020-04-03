@@ -95,7 +95,7 @@ while True:
 
         if diffTime >=5:
             fps=frameCount/5
-            print("fps:" + str(fps))
+            print("fps:" + str(fps) + " - " + str(imgSize / 1024))
             startTime = time.time()
             frameCount=0
 
