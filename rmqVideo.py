@@ -25,7 +25,7 @@ queueName='cam-4fps'
 channel.queue_declare(queue=queueName)
 
 # cap = cv2.VideoCapture(1)
-vidPath="/home/cc/video/k2.avi"
+vidPath="/home/cc/video/k3.avi"
 cap = cv2.VideoCapture(vidPath)
 cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 

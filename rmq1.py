@@ -66,7 +66,7 @@ while True:
         # height, width = img.shape[:2]
         # print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
 
-        # half = cv2.resize(frame, (1280, 720))
+        half = cv2.resize(frame, (640, 480))
         result, encimg = cv2.imencode('.jpg', frame, encode_param)
         imgSize =  sys.getsizeof(encimg)
         # height, width = half.shape[:2]
@@ -87,7 +87,7 @@ while True:
         channel.basic_publish(exchange='', routing_key=queueName, body=jsonStr)
         frameCount=frameCount+1
         _diffTime=time.time()-_startTime
-        waitTime = 0.05-_diffTime
+        waitTime = 0.1-_diffTime
         if waitTime>0:
             time.sleep(waitTime)
 
