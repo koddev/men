@@ -89,7 +89,7 @@ while True:
         channel.basic_publish(exchange='', routing_key=queueName, body=jsonStr)
         frameCount=frameCount+1
         _diffTime=time.time()-_startTime
-        waitTime = 0.05-_diffTime
+        waitTime = 0.1-_diffTime
         if waitTime>0:
             time.sleep(waitTime)
 
