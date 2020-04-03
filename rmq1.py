@@ -76,7 +76,7 @@ while True:
 
 
         encoded_string = str(base64.b64encode(encimg))
-        imgSize = sys.getsizeof(encoded_string)
+        # imgSize = sys.getsizeof(encoded_string)
 
         now = datetime.now().isoformat()
         camClass = CamFrameClass(now, encoded_string)
