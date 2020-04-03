@@ -36,7 +36,7 @@ cap = cv2.VideoCapture(1)
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
 averageFps = 0
 frameCount=0
 startTime=time.time()
@@ -76,6 +76,8 @@ while True:
 
 
         encoded_string = str(base64.b64encode(encimg))
+        imgSize = sys.getsizeof(encoded_string)
+
         now = datetime.now().isoformat()
         camClass = CamFrameClass(now, encoded_string)
 
