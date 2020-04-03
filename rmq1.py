@@ -36,7 +36,7 @@ cap = cv2.VideoCapture(1)
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
 averageFps = 0
 frameCount=0
 startTime=time.time()
@@ -87,7 +87,7 @@ while True:
         channel.basic_publish(exchange='', routing_key=queueName, body=jsonStr)
         frameCount=frameCount+1
         _diffTime=time.time()-_startTime
-        waitTime = 0.1-_diffTime
+        waitTime = 0.01-_diffTime
         if waitTime>0:
             time.sleep(waitTime)
 
