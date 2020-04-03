@@ -36,7 +36,7 @@ cap = cv2.VideoCapture(1)
 # stream.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080);
 # stream.set(cv2.cv.CV_CAP_PROP_FPS, 5)
 
-encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
+encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
 averageFps = 0
 frameCount=0
 startTime=time.time()
@@ -66,7 +66,7 @@ while True:
         # height, width = img.shape[:2]
         # print(str(width) + " " + str(height) + " " + str(imgSize/1024) + " KB")
 
-        half = cv2.resize(frame, (640, 480))
+        # half = cv2.resize(frame, (640, 480))
         result, encimg = cv2.imencode('.jpg', frame, encode_param)
         imgSize =  sys.getsizeof(encimg)
         # height, width = half.shape[:2]
