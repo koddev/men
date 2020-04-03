@@ -15,16 +15,19 @@ class CamFrameClass:
         self.image = image
 
 
+
 # addressIp='62.244.197.146'
 addressIp='192.168.116.20'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
-channel.queue_declare(queue='cam3')
+queueName='cam-4fps'
+channel.queue_declare(queue=queueName)
 
 # cap = cv2.VideoCapture(1)
-vidPath="/home/cc/video/k3.avi"
+vidPath="/home/cc/video/k2.avi"
 cap = cv2.VideoCapture(vidPath)
+cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280);
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720);
@@ -53,7 +56,7 @@ while True:
 
 
         frameCount2 = frameCount2 + 1
-        if frameCount2 % 4 !=0:
+        if frameCount2 % 6 !=0:
             continue
 
         frameCount = frameCount + 1
@@ -90,10 +93,10 @@ while True:
         # + " " + str(width) + "X" + str(height)
 
         _startTime=time.time()
-        channel.basic_publish(exchange='', routing_key='cam3', body=jsonStr)
+        channel.basic_publish(exchange='', routing_key=queueName, body=jsonStr)
 
         _diffTime=time.time()-_startTime
-        # waitTime = 0.1-_diffTime
+        # waitTime = 0.05-_diffTime
         # if waitTime>0:
         #     time.sleep(waitTime)
 

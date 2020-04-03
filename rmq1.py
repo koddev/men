@@ -20,7 +20,8 @@ addressIp='62.244.197.146'
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(addressIp,5550))
 channel = connection.channel()
-channel.queue_declare(queue='cam2')
+queueName='camlive'
+channel.queue_declare(queue=queueName)
 
 # cap = cv2.VideoCapture(1)
 # vidPath="/home/cc/video/k1.avi"
@@ -83,7 +84,7 @@ while True:
         # + " " + str(width) + "X" + str(height)
 
         _startTime=time.time()
-        channel.basic_publish(exchange='', routing_key='cam2', body=jsonStr)
+        channel.basic_publish(exchange='', routing_key=queueName, body=jsonStr)
         frameCount=frameCount+1
         _diffTime=time.time()-_startTime
         waitTime = 0.05-_diffTime
