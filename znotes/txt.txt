@@ -4,9 +4,12 @@
 
 
 
+pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_aarch64.whl
 
-
-
+edgetpu_detect \
+--source /mnt/sd/kizilay/3.MP4  \
+--model /mnt/sd/coral/examples-camera/all_models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite \
+--top_k 9
 
 
 
