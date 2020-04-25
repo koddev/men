@@ -25,7 +25,7 @@ print(tf.nn.softmax(predictions).numpy())
 # import numpy as np
 # import cv2
 
-# cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture('D:/cc/code/Python/video/kizilayara.avi')
 #
 # while(True):
 #     # Capture frame-by-frame
