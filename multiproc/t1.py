@@ -4,14 +4,18 @@ import time
 
 async def hold(seconds):
     print(f'Waiting {seconds} seconds...')
-    await asyncio.sleep(seconds)
+    time.sleep(seconds)
+    # await asyncio.sleep(seconds)
 
+
+def run(a):
+    yield 5*a
 
 async def main():
     await asyncio.gather(
-        hold(1),
-        hold(2),
-        hold(3),
+        run(1),
+        run(2),
+        run(3),
     )
 
 
