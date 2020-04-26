@@ -6,8 +6,7 @@ import os
 
 
 async def hold(sec):
-    print(f'Running for {sec} seconds - {str(os.getpid())}')
-    # time.sleep(sec)
+    print(f'Running for {sec} seconds')
     await asyncio.sleep(sec)
 
 
