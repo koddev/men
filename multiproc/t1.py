@@ -8,15 +8,26 @@ async def hold(seconds):
     # await asyncio.sleep(seconds)
 
 
-def run(a):
-    yield 5*a
+async def get_chat_id(name):
+    await asyncio.sleep(3)
+    return "chat-%s" % name
+
+
+
 
 async def main():
-    await asyncio.gather(
-        run(1),
-        run(2),
-        run(3),
-    )
+    s=time.time()
+
+    task = asyncio.create_task(get_chat_id('aa'))
+    await asyncio.sleep(3)
+    res=await task
+    print(res)
+    print(time.time()-s)
+    # await asyncio.gather(
+    #     hold(1),
+    #     hold(2),
+    #     hold(3),
+    # )
 
 
 asyncio.run(main())

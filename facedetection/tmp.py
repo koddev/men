@@ -48,10 +48,10 @@ def imgasync(img):
 
 async def parcala():
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
         futures=[]
 
-        for i in range(20):
+        for i in range(2000):
             futures.append(executor.submit(imgasync, img11))
 
 
