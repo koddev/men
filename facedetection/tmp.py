@@ -9,6 +9,9 @@ from matplotlib.image import imread
 import os
 import time
 
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+
 path_model = './model/frozen_inference_graph_face.pb'
 path_label = './protos/face_label_map.pbtxt'
 num_classes = 2
@@ -25,7 +28,7 @@ num_classes = 2
 # img2=Image.open('./tmpfaces/2.jpg')
 # img22=np.asarray(img1)
 img11=imread('./tmpfaces/1.jpg')
-img22=imread('./tmpfaces/2.jpg')
+img22=imread('./tmpfaces/22.jpg')
 
 imgs=np.asarray((img11,img22))
 t1 = TensorFaceDetector()
@@ -48,11 +51,11 @@ def imgasync(img):
 
 async def parcala():
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
         futures=[]
 
-        for i in range(2000):
-            futures.append(executor.submit(imgasync, img11))
+        for i in range(500):
+            futures.append(executor.submit(imgasync, img22))
 
 
         # futures.append(executor.submit(TensorFaceDetector().run,img11))
