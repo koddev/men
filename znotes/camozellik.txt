@@ -1,5 +1,8 @@
 teknikcam:
 
+
+
+
 ioctl: VIDIOC_ENUM_FMT
 	Type: Video Capture
 
@@ -122,7 +125,7 @@ sudo touch /etc/usb_modeswitch.d/12d1:1f01
 usb_modeswitch -c /etc/usb_modeswitch.d/12d1:1f01
 
 
-
+ls -ltrh /dev/video*
 
 
 
