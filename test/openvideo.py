@@ -1,9 +1,17 @@
 import cv2
+import os
+
+
+stream = os.popen('fuser /dev/video0')
+output=stream.read().strip().split()
+for i in output:
+    os.kill(int(i),9)
 
 cap = cv2.VideoCapture(0)
 
 while(True):
     # Capture frame-by-frame
+    print('starttt')
     ret, frame = cap.read()
     if ret != True:
         continue
