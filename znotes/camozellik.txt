@@ -1,3 +1,21 @@
+
+
+
+
+
+ls -l /dev/video*
+
+
+
+
+
+
+
+
+
+
+
+
 teknikcam:
 
 

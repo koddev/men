@@ -1,4 +1,8 @@
 import cv2
+
+import pygame.camera
+import pygame.image
+
 import zipfile
 import json
 from datetime import datetime
@@ -26,20 +30,48 @@ max_que_size=100
 queueFrame=queue.LifoQueue(100)
 is_exit=False
 
-
+pygame.camera.init()
+cameras = pygame.camera.list_cameras()
+webcam = pygame.camera.Camera(cameras[0])
+webcam.start()
 
 class CamFrameClass:
     def __init__(self, time, image):
         self.time = time
         self.image = image
+ 
+
+def killCaptureProcess():
+    for camName in cameras:
+        stream = os.popen('fuser ' + camName)
+        output=stream.read().strip().split()
+        while len(output)>0:
+            for i in output:
+                os.kill(int(i),9)
+                print('kill')
+                time.sleep(0.05)
+            stream = os.popen('fuser ' + camName)
+            output=stream.read().strip().split()
 
 
 
+    
 
+def getVideoCapture():       
+    for c in cameras:
+        cap=cv2.VideoCapture(c)
+        ret, frame = cap.read()
+        if ret == True:
+            return cap
+        else:
+            cap.release()
 
 def capture(*args):
         
-        cap = cv2.VideoCapture(0)
+        cap = getVideoCapture()
+        if cap is None:
+            print('Hata')
+            return
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
         _fpsStartTime=time.time()
         _frameCount=0
@@ -91,7 +123,7 @@ if __name__ == '__main__':
     try:
 
         print('start')
-        
+        killCaptureProcess()
 
         p.append(threading.Thread(target=capture, args=(1,)))
         p[0].daemon=True
@@ -103,10 +135,10 @@ if __name__ == '__main__':
             frame=queueFrame.get()
 
             imgSize =  sys.getsizeof(frame)
-            # print(imgSize)
+            print(imgSize)
             # print(queueFrame.qsize())
             # print(psutil.virtual_memory())  # physical memory usage
-            print('memory % used:', psutil.virtual_memory()[2])
+            # print('memory % used:', psutil.virtual_memory()[2])
             time.sleep(0.1)
             
 

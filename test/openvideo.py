@@ -1,19 +1,53 @@
 import cv2
 import os
+import time
+import pygame.camera
+import pygame.image
+import sys
+import time
+
+pygame.camera.init()
+cameras = pygame.camera.list_cameras()
+ 
 
 
-stream = os.popen('fuser /dev/video0')
-output=stream.read().strip().split()
-for i in output:
-    os.kill(int(i),9)
+def killCaptureProcess():
+    for camName in cameras:
+        stream = os.popen('fuser ' + camName)
+        output=stream.read().strip().split()
+        while len(output)>0:
+            for i in output:
+                os.kill(int(i),9)
+                print('kill')
+                time.sleep(0.05)
+            stream = os.popen('fuser ' + camName)
+            output=stream.read().strip().split()
 
-cap = cv2.VideoCapture(0)
 
+
+    
+
+def getVideoCapture():
+    killCaptureProcess()    
+    for c in cameras:
+        cap=cv2.VideoCapture(c)
+        ret, frame = cap.read()
+        if ret == True:
+            return cap
+        else:
+            cap.release()
+
+
+
+
+
+cap=getVideoCapture()
 while(True):
     # Capture frame-by-frame
-    print('starttt')
+    
     ret, frame = cap.read()
     if ret != True:
+        print('starttt')
         continue
 
     # Our operations on the frame come here

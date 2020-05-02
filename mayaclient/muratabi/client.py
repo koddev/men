@@ -11,8 +11,19 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((serverIP, tcpPort))
 command = Command(sock)
 
-while True:
-    data = sock.recv(1024).decode()
-    command.parse_command(data)
+def recvall(sock, buffer_size=4096):
+    buf = sock.recv(buffer_size)
+    while buf:
+        yield buf
+        if len(buf) < buffer_size: break
+        buf = sock.recv(buffer_size)
 
+command.faceCapture.startImageStream(command.settings.settings["resolution"], command.settings.settings["fps"])
+data = ''
+while True:
+    #data = sock.recv(1024).decode()
+    data += b''.join(recvall(sock)).decode('UTF-8')
+    if data[-1] == "\n":
+        command.parse_command(data)
+        data = ''
 sock.close()

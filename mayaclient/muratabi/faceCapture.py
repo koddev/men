@@ -30,8 +30,8 @@ class FaceCapture:
                 encoded_string = base64.b64encode(encimg).decode("utf-8") 
                 print("sending face")                           
                 Thread(target = self.send_image_thread, args = (encoded_string)).start()
-                self.continueStreaming = False
-                break 
+                #self.continueStreaming = False
+                #break 
 
 
     def send_image_thread(self, *arg):
@@ -39,7 +39,8 @@ class FaceCapture:
         guid = GUID()
         msg = {
             "guid": guid.uuid,
-            "image": sendImage
+            "image": sendImage,
+            "key" : 'Kasif'
         }
         sendMsg = json.dumps(msg)
         self.sock.send(sendMsg.encode())

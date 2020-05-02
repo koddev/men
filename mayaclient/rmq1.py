@@ -1,5 +1,9 @@
 import pika
+
 import cv2
+import pygame.camera
+import pygame.image
+
 import zipfile
 import json
 from datetime import datetime
