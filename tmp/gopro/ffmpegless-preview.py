@@ -9,14 +9,14 @@ from goprocam import constants
 gpCam = GoProCamera.GoPro()
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 t=time()
-gpCam.streamSettings("2400000", "6")
+gpCam.streamSettings("2400000", "9")
 gpCam.livestream("start")
 cap = cv2.VideoCapture("udp://10.5.5.9:8554")
 while True:
     nmat, frame = cap.read()
-    cv2.imshow("GoPro OpenCV", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # cv2.imshow("GoPro OpenCV", frame)
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
     if time() - t >= 2.5:
         sock.sendto("_GPHD_:0:0:2:0.000000\n".encode(), ("10.5.5.9", 8554))
         t=time()

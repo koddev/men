@@ -15,15 +15,15 @@ gopro.mode("2","0")
 
 # gopro.mode(constants.Mode.PhotoMode,constants.Mode.SubMode.MultiShot.Burst)
 # gopro.take_photo()
-while True:
-    gopro.shutter("1")
+ 
+gopro.shutter("1")
+ready = int(gopro.getStatus(constants.Status.Status,
+                            constants.Status.STATUS.IsBusy))
+while ready == 1:
     ready = int(gopro.getStatus(constants.Status.Status,
-                               constants.Status.STATUS.IsBusy))
-    while ready == 1:
-        ready = int(gopro.getStatus(constants.Status.Status,
-                                   constants.Status.STATUS.IsBusy))
-    time.sleep(0.5)
-    print(gopro.getMedia())
+                                constants.Status.STATUS.IsBusy))
+time.sleep(0.5)
+print(gopro.getMedia())
 
 # gopro.stream("udp://127.0.0.1:10000")
 
