@@ -40,10 +40,10 @@ from guid import GUID
 
 class KasifClass(object):
     def __init__(self):
-        self.IsConnect=False
+        self.IsConnected=False
         self.sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcpPort = 5551
-        self.serverIP='62.244.222.146'
+        self.serverIP='62.244.197.146'
         self.max_que_size=200
         self.queueFrame=queue.LifoQueue(self.max_que_size)
         self.is_exit=False
@@ -70,6 +70,11 @@ class KasifClass(object):
     def capture(self,*args):
           
         self.killCaptureProcess()
+        # while not self.cameras[0]:
+        #     time.sleep(0.1)
+        #     self.cameras = pygame.camera.list_cameras()
+        #     print('camera waittt')
+
         webcam = pygame.camera.Camera(self.cameras[0])
         webcam.start()
         # img = webcam.get_image()
@@ -90,13 +95,20 @@ class KasifClass(object):
                 self.queueFrame.get()
                 # queueFrame.task_done()
                 # sys.exit()
+                
         
             img= webcam.get_image()
+            os.chdir("/home/kom/Pictures")
+            # pygame.image.save(img,"/home/kom/asd.jpg")
             # pil_string_image = pygame.image.tostring(img,"RGBA",False)
             # im = Image.frombytes("RGBA",(1920,1080),pil_string_image)
-            img=pygame.transform.rotate(img,90)
-            
+            # img=pygame.transform.rotate(img,90)
+            # pygame.image.save(img,"/home/kom/asd.jpg")
             frame = pygame.surfarray.array3d(img)
+            frame = cv2.transpose(frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            # frame640 = cv2.resize(frame,(1024,576))            
+            # encimg = cv2.imwrite('aa.jpg', frame640, encode_param) 
             result, encimg = cv2.imencode('.jpg', frame, encode_param) 
             
     
@@ -115,6 +127,7 @@ class KasifClass(object):
             self.sock.connect((self.serverIP,self.tcpPort))  
             self.IsConnected=True
         except Exception as e:
+            # self.sock.close
             print(e)
 
 
