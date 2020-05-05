@@ -21,10 +21,10 @@ import pika
 import socket
 from guid import GUID
 
- 
 
- 
- 
+# from utils import label_map_util
+# from utils import visualization_utils_color as vis_util
+
 # tcpPort = 5551
 # sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # IsConnected=False
@@ -44,11 +44,12 @@ class KasifClass(object):
         self.sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
-        self.max_que_size=200
+        self.max_que_size=100
         self.queueFrame=queue.LifoQueue(self.max_que_size)
         self.is_exit=False
         pygame.camera.init()
-        self.cameras = pygame.camera.list_cameras() 
+        self.cameras = pygame.camera.list_cameras()
+        
 
 
 
@@ -89,7 +90,7 @@ class KasifClass(object):
     
         # print("Width: %d, Height: %d, FPS: %d" % (cap.get(3), cap.get(4), cap.get(5)))
         while not self.is_exit:        
-            time.sleep(0.1)
+            # time.sleep(0.1)
             if  psutil.virtual_memory()[2]>90 or self.queueFrame.qsize()>self.max_que_size: #queueFrame.qsize()>max_que_size: #queueFrame.full() or
                 print('queue/memory is full')
                 self.queueFrame.get()
@@ -98,7 +99,7 @@ class KasifClass(object):
                 
         
             img= webcam.get_image()
-            os.chdir("/home/kom/Pictures")
+            # os.chdir("/home/kom/Pictures")
             # pygame.image.save(img,"/home/kom/asd.jpg")
             # pil_string_image = pygame.image.tostring(img,"RGBA",False)
             # im = Image.frombytes("RGBA",(1920,1080),pil_string_image)
@@ -129,6 +130,28 @@ class KasifClass(object):
         except Exception as e:
             # self.sock.close
             print(e)
+    
+
+    def sendImageAsync(self,*img):
+        encoded_string = base64.b64encode(img[0]).decode("utf-8")
+        imgSize =  sys.getsizeof(encoded_string)
+        guid = GUID()
+
+        msg = {
+            "guid": guid.uuid,
+            "image": encoded_string,
+            "key" : "Kasif"
+        }
+
+        # print(encoded_string)
+        sendMsg = json.dumps(msg)
+        try:
+            self.sock.send(sendMsg.encode())
+            print(str(imgSize) + ' - ' + str(self.queueFrame.qsize()) + ' memory % used:', psutil.virtual_memory()[2])
+        except Exception as ex:
+            self.IsConnected=False
+            print(ex)
+
 
 
 
@@ -149,41 +172,27 @@ class KasifClass(object):
 
             while True:
                 if self.queueFrame.empty():
-                    time.sleep(0.05)
+                    time.sleep(0.1)
+                    continue
                 while not self.IsConnected:
-                    time.sleep(1)
+                    time.sleep(3)
                     print('retry connect')
                     self.connect()                
 
-
-
+ 
+                
                 frame=self.queueFrame.get()
-                encoded_string = base64.b64encode(frame).decode("utf-8")
-
-                guid = GUID()
-
-                msg = {
-                    "guid": guid.uuid,
-                    "image": encoded_string,
-                    "key" : "Kasif"
-                }
-
-                # print(encoded_string)
-                sendMsg = json.dumps(msg)
-                try:
-                    self.sock.send(sendMsg.encode())
-                    time.sleep(0.05)
-                except Exception as ex:
-                    self.IsConnected=False
-                    print(ex)
+                # self.sendImageAsync(frame)
+                sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
+                sendThread.daemon=True
+                sendThread.start()
 
 
-
-                imgSize =  sys.getsizeof(frame)
+                
                 # print(imgSize)
                 # print(queueFrame.qsize())
                 # print(psutil.virtual_memory())  # physical memory usage
-                print(str(imgSize) + ' - ' + str(self.queueFrame.qsize()) + ' memory % used:', psutil.virtual_memory()[2])
+                
 
         except Exception as e:
             print(e)
@@ -191,8 +200,6 @@ class KasifClass(object):
 
 
         p[0].join()
-
-
 
 
 if __name__ == '__main__':

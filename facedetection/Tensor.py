@@ -37,6 +37,7 @@ class TensorFaceDetector(object):
         self.sess.close()
 
     def run(self, image):
+        #image_np=image
         image_np = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # the array based representation of the image will be used later in order to prepare the
         # result image with boxes and labels on it.
