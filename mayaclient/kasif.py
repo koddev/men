@@ -120,7 +120,14 @@ class KasifClass(socketio.Namespace):
         #     print('camera waittt')
 
         webcam = pygame.camera.Camera(self.cameras[0])
-        webcam.start()
+        while True:
+            try:
+                webcam.start()
+                break
+            except Exception as e:
+                print(e)
+                time.sleep(1)
+
         # img = webcam.get_image()
         # WIDTH = img.get_width()
         # HEIGHT = img.get_height()
