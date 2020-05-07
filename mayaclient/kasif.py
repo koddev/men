@@ -175,7 +175,7 @@ class KasifClass(socketio.Namespace):
             
 
         # cagatay
-    def connectStart(self):
+    def connectStart(self,a):
         try:     
             
             self.sio.connect(self.socketAddress)
