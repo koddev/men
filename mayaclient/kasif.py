@@ -219,14 +219,6 @@ class KasifClass(socketio.Namespace):
             print(e)
 
 
-
-
-
-
-
-
-
-
     def start(self):
         p = []
 
