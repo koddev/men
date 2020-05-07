@@ -82,7 +82,7 @@ class KasifClass(socketio.Namespace):
         self.sio = socketio.Client()
         # self.sio.connect(self.socketAddress)
         self.sio.on('connect',self.connect)
-        self.sio.on('frres',self.on_frres)
+        # self.sio.on('frres',self.on_frres)
         # self.sio.on('message',self.message)
         self.sio.on('connect_error',self.connect_error)
         self.sio.on('disconnect',self.disconnect)
@@ -249,10 +249,10 @@ class KasifClass(socketio.Namespace):
                 # frameResize=cv2.resize(frame,(960,540))
                 # self.FaceDetect(frameResize)
 
-                self.sendImageAsync(frame)
-                # sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
-                # sendThread.daemon=True
-                # sendThread.start()
+                # self.sendImageAsync(frame)
+                sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
+                sendThread.daemon=True
+                sendThread.start()
 
 
                 
