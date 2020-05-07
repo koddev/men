@@ -195,8 +195,8 @@ class KasifClass(socketio.Namespace):
         msg = {
             "guid": guid.uuid,
             "image": encoded_string,
-            "key" : "Kasif",
-            "hostname" : socket.gethostname()
+            "channel" : "Kasif",
+            "key" : socket.gethostname()
         }
 
         # print(encoded_string)
