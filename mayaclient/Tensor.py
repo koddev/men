@@ -23,7 +23,7 @@ class TensorFaceDetector(object):
 
         with self.detection_graph.as_default():
             config = tf.ConfigProto()
-            # config.gpu_options.per_process_gpu_memory_fraction=0.8
+            # config.gpu_options.per_process_gpu_memory_fraction=0.6
             # config.intra_op_parallelism_threads=2
             # config.inter_op_parallelism_threads=2
             config.gpu_options.allow_growth = True

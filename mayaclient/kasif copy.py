@@ -21,8 +21,8 @@ import pika
 import socket
 from guid import GUID
 
-from Tensor import TensorFaceDetector
-import numpy as np
+# from Tensor import TensorFaceDetector
+# import numpy as np
 
 # from utils import label_map_util
 # from utils import visualization_utils_color as vis_util
@@ -46,12 +46,13 @@ class KasifClass(object):
         self.sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
-        self.max_que_size=200
+        self.max_que_size=50
         self.queueFrame=queue.LifoQueue(self.max_que_size)
         self.is_exit=False
         pygame.camera.init()
         self.cameras = pygame.camera.list_cameras()
-        self.t1=TensorFaceDetector() 
+        # self.t1=TensorFaceDetector()
+        
 
 
 
@@ -92,9 +93,9 @@ class KasifClass(object):
     
         # print("Width: %d, Height: %d, FPS: %d" % (cap.get(3), cap.get(4), cap.get(5)))
         while not self.is_exit:        
-            time.sleep(0.1)
+            # time.sleep(0.1)
             if  psutil.virtual_memory()[2]>90 or self.queueFrame.qsize()>self.max_que_size: #queueFrame.qsize()>max_que_size: #queueFrame.full() or
-                print('queue/memory is full')
+                # print('queue/memory is full')
                 self.queueFrame.get()
                 # queueFrame.task_done()
                 # sys.exit()
@@ -107,9 +108,13 @@ class KasifClass(object):
             # im = Image.frombytes("RGBA",(1920,1080),pil_string_image)
             # img=pygame.transform.rotate(img,90)
             # pygame.image.save(img,"/home/kom/asd.jpg")
+
+
             frame = pygame.surfarray.array3d(img)
             frame = cv2.transpose(frame)
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+
             # frame640 = cv2.resize(frame,(1024,576))            
             # encimg = cv2.imwrite('aa.jpg', frame640, encode_param) 
             result, encimg = cv2.imencode('.jpg', frame, encode_param) 
@@ -132,6 +137,37 @@ class KasifClass(object):
         except Exception as e:
             # self.sock.close
             print(e)
+    
+
+    def sendImageAsync(self,*img):
+
+        encoded_string = base64.b64encode(img[0]).decode("utf-8")
+        imgSize =  sys.getsizeof(encoded_string)
+        guid = GUID()
+
+        msg = {
+            "guid": guid.uuid,
+            "image": encoded_string,
+            "key" : "Kasif"
+        }
+
+        # print(encoded_string)
+        sendMsg = json.dumps(msg)
+        try:
+            self.sock.send(sendMsg.encode())
+            print(str(imgSize) + ' - ' + str(self.queueFrame.qsize()) + ' memory % used:', psutil.virtual_memory()[2])
+        except Exception as ex:
+            self.IsConnected=False
+            print(ex)
+
+
+    def FaceDetect(self,*img):
+        frame = cv2.cvtColor(img[0], cv2.COLOR_RGB2BGR)
+        try:
+            (boxes, scores, classes, num_detections) = self.t1.run(frame)
+            print(boxes, scores, classes, num_detections)
+        except Exception as e:
+            print(e)
 
 
 
@@ -152,49 +188,31 @@ class KasifClass(object):
 
             while True:
                 if self.queueFrame.empty():
-                    time.sleep(0.05)
+                    time.sleep(0.1)
+                    continue
                 while not self.IsConnected:
                     time.sleep(3)
                     print('retry connect')
                     self.connect()                
 
-
+ 
                 
                 frame=self.queueFrame.get()
-                try:
+                # frameResize=cv2.resize(frame,(960,540))
+                # self.FaceDetect(frameResize)
 
-                    (boxes, scores, classes, num_detections) = self.t1.run(frame)
-                except Exception as e:
-                    print(e)
+                print('ok')
+                # self.sendImageAsync(frame)
+                # sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
+                # sendThread.daemon=True
+                # sendThread.start()
+
 
                 
-              
-                encoded_string = base64.b64encode(frame).decode("utf-8")
-
-                guid = GUID()
-
-                msg = {
-                    "guid": guid.uuid,
-                    "image": encoded_string,
-                    "key" : "Kasif"
-                }
-
-                # print(encoded_string)
-                sendMsg = json.dumps(msg)
-                try:
-                    self.sock.send(sendMsg.encode())
-                    time.sleep(0.05)
-                except Exception as ex:
-                    self.IsConnected=False
-                    print(ex)
-
-
-
-                imgSize =  sys.getsizeof(frame)
                 # print(imgSize)
                 # print(queueFrame.qsize())
                 # print(psutil.virtual_memory())  # physical memory usage
-                print(str(imgSize) + ' - ' + str(self.queueFrame.qsize()) + ' memory % used:', psutil.virtual_memory()[2])
+                
 
         except Exception as e:
             print(e)
@@ -202,8 +220,6 @@ class KasifClass(object):
 
 
         p[0].join()
-
-
 
 
 if __name__ == '__main__':

@@ -20,7 +20,9 @@ import guid
 import pika
 import socket
 from guid import GUID
-
+import socketio
+# from Tensor import TensorFaceDetector
+# import numpy as np
 
 # from utils import label_map_util
 # from utils import visualization_utils_color as vis_util
@@ -38,17 +40,58 @@ from guid import GUID
 # cameras = pygame.camera.list_cameras()  
 
 
-class KasifClass(object):
+class KasifClass(socketio.Namespace):
+        # @self.sio.event
+    def message(self,data):
+        print('I received a message!')
+
+    # @self.sio.on('frres')
+    def on_frres(self,data):
+        print(data)
+    
+    # @self.sio.event
+    def connect(self):
+        self.IsConnected=True
+        print("I'm connected!")
+
+    # @self.sio.event
+    def connect_error(self):
+        self.IsConnected=False
+        print("The connection failed!")
+
+    # @self.sio.event
+    def disconnect(self):
+        self.IsConnected=False
+        print("I'm disconnected!")
+
+    # @self.sio.event
+    def reconnect(self):
+        print("I'm reconnect!")
+
     def __init__(self):
         self.IsConnected=False
-        self.sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+         
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
-        self.max_que_size=100
+        self.socketAddress='http://' + self.serverIP +':5551'
+        self.max_que_size=50
         self.queueFrame=queue.LifoQueue(self.max_que_size)
         self.is_exit=False
         pygame.camera.init()
         self.cameras = pygame.camera.list_cameras()
+        self.sio = socketio.Client()
+        # self.sio.connect(self.socketAddress)
+        self.sio.on('connect',self.connect)
+        self.sio.on('frres',self.on_frres)
+        self.sio.on('message',self.message)
+        self.sio.on('connect_error',self.connect_error)
+        self.sio.on('disconnect',self.disconnect)
+        self.sio.on('reconnect',self.reconnect)
+ 
+
+
+        
+        # self.t1=TensorFaceDetector()
         
 
 
@@ -92,7 +135,7 @@ class KasifClass(object):
         while not self.is_exit:        
             # time.sleep(0.1)
             if  psutil.virtual_memory()[2]>90 or self.queueFrame.qsize()>self.max_que_size: #queueFrame.qsize()>max_que_size: #queueFrame.full() or
-                print('queue/memory is full')
+                # print('queue/memory is full')
                 self.queueFrame.get()
                 # queueFrame.task_done()
                 # sys.exit()
@@ -105,9 +148,13 @@ class KasifClass(object):
             # im = Image.frombytes("RGBA",(1920,1080),pil_string_image)
             # img=pygame.transform.rotate(img,90)
             # pygame.image.save(img,"/home/kom/asd.jpg")
+
+
             frame = pygame.surfarray.array3d(img)
             frame = cv2.transpose(frame)
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+
             # frame640 = cv2.resize(frame,(1024,576))            
             # encimg = cv2.imwrite('aa.jpg', frame640, encode_param) 
             result, encimg = cv2.imencode('.jpg', frame, encode_param) 
@@ -121,18 +168,19 @@ class KasifClass(object):
             
 
 
-    def connect(self):
+    def connectStart(self):
         try:     
-            # sock.close() 
-            self.sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((self.serverIP,self.tcpPort))  
+            
+            self.sio.connect(self.socketAddress)
             self.IsConnected=True
+            
         except Exception as e:
             # self.sock.close
             print(e)
     
 
     def sendImageAsync(self,*img):
+
         encoded_string = base64.b64encode(img[0]).decode("utf-8")
         imgSize =  sys.getsizeof(encoded_string)
         guid = GUID()
@@ -140,17 +188,34 @@ class KasifClass(object):
         msg = {
             "guid": guid.uuid,
             "image": encoded_string,
-            "key" : "Kasif"
+            "key" : "Kasif",
+            "hostname" : socket.gethostname()
         }
 
         # print(encoded_string)
-        sendMsg = json.dumps(msg)
+        # sendMsg = json.dumps(msg)
         try:
-            self.sock.send(sendMsg.encode())
+            self.sio.emit('frreq', msg)
+             
             print(str(imgSize) + ' - ' + str(self.queueFrame.qsize()) + ' memory % used:', psutil.virtual_memory()[2])
         except Exception as ex:
             self.IsConnected=False
             print(ex)
+
+
+    def FaceDetect(self,*img):
+        frame = cv2.cvtColor(img[0], cv2.COLOR_RGB2BGR)
+        try:
+            (boxes, scores, classes, num_detections) = self.t1.run(frame)
+            print(boxes, scores, classes, num_detections)
+        except Exception as e:
+            print(e)
+
+
+
+
+
+
 
 
 
@@ -159,7 +224,7 @@ class KasifClass(object):
         p = []
 
         try:
-            self.connect()
+            self.connectStart()
             print('start')
 
             p.append(threading.Thread(target=self.capture, args=(1,)))
@@ -175,17 +240,21 @@ class KasifClass(object):
                     time.sleep(0.1)
                     continue
                 while not self.IsConnected:
-                    time.sleep(3)
+                    time.sleep(5)
                     print('retry connect')
-                    self.connect()                
+                    self.connectStart()                
 
  
                 
                 frame=self.queueFrame.get()
-                # self.sendImageAsync(frame)
-                sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
-                sendThread.daemon=True
-                sendThread.start()
+                # frameResize=cv2.resize(frame,(960,540))
+                # self.FaceDetect(frameResize)
+
+                print('ok')
+                self.sendImageAsync(frame)
+                # sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
+                # sendThread.daemon=True
+                # sendThread.start()
 
 
                 
@@ -200,6 +269,7 @@ class KasifClass(object):
 
 
         p[0].join()
+
 
 
 if __name__ == '__main__':
