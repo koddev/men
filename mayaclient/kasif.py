@@ -257,7 +257,6 @@ class KasifClass(socketio.Namespace):
                 # frameResize=cv2.resize(frame,(960,540))
                 # self.FaceDetect(frameResize)
 
-                print('ok')
                 self.sendImageAsync(frame)
                 # sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
                 # sendThread.daemon=True
