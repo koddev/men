@@ -83,7 +83,7 @@ class KasifClass(socketio.Namespace):
         # self.sio.connect(self.socketAddress)
         self.sio.on('connect',self.connect)
         self.sio.on('frres',self.on_frres)
-        self.sio.on('message',self.message)
+        # self.sio.on('message',self.message)
         self.sio.on('connect_error',self.connect_error)
         self.sio.on('disconnect',self.disconnect)
         self.sio.on('reconnect',self.reconnect)
@@ -148,7 +148,7 @@ class KasifClass(socketio.Namespace):
                 # sys.exit()
                 
         
-            img= webcam.get_image()
+            img = webcam.get_image()
             # os.chdir("/home/kom/Pictures")
             # pygame.image.save(img,"/home/kom/asd.jpg")
             # pil_string_image = pygame.image.tostring(img,"RGBA",False)
