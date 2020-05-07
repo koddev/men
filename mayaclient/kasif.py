@@ -174,7 +174,7 @@ class KasifClass(socketio.Namespace):
              
             
 
-
+        # cagatay
     def connectStart(self):
         try:     
             
