@@ -140,7 +140,7 @@ class KasifClass(socketio.Namespace):
     
         # print("Width: %d, Height: %d, FPS: %d" % (cap.get(3), cap.get(4), cap.get(5)))
         while not self.is_exit:        
-            # time.sleep(0.1)
+            time.sleep(0.1)
             if  psutil.virtual_memory()[2]>90 or self.queueFrame.qsize()>self.max_que_size: #queueFrame.qsize()>max_que_size: #queueFrame.full() or
                 # print('queue/memory is full')
                 self.queueFrame.get()
