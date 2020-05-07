@@ -74,7 +74,7 @@ class KasifClass(socketio.Namespace):
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
         self.socketAddress='http://' + self.serverIP +':5551'
-        self.max_que_size=50
+        self.max_que_size=400
         self.queueFrame=queue.LifoQueue(self.max_que_size)
         self.is_exit=False
         pygame.camera.init()
