@@ -70,12 +70,12 @@ class KasifClass(socketio.Namespace):
 
     def __init__(self):
         self.IsConnected=False
-         
+        self.delay=1/5
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
         self.socketAddress='http://' + self.serverIP +':5551'
         self.max_que_size=400
-        self.queueFrame=queue.LifoQueue(self.max_que_size)
+        self.queueFrame=queue.LifoQueue(self.max_que_size+300)
         self.is_exit=False
         pygame.camera.init()
         self.cameras = pygame.camera.list_cameras()
@@ -87,6 +87,7 @@ class KasifClass(socketio.Namespace):
         self.sio.on('connect_error',self.connect_error)
         self.sio.on('disconnect',self.disconnect)
         self.sio.on('reconnect',self.reconnect)
+        
  
 
 
@@ -112,7 +113,6 @@ class KasifClass(socketio.Namespace):
 
 
     def capture(self,*args):
-          
         self.killCaptureProcess()
         # while not self.cameras[0]:
         #     time.sleep(0.1)
@@ -128,9 +128,9 @@ class KasifClass(socketio.Namespace):
                 print(e)
                 time.sleep(1)
 
-        # img = webcam.get_image()
         # WIDTH = img.get_width()
         # HEIGHT = img.get_height()
+        # print("Width: %d, Height: %d, FPS: %d" % (cap.get(3), cap.get(4), cap.get(5)))
     
     
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
@@ -138,9 +138,9 @@ class KasifClass(socketio.Namespace):
         _frameCount=0
     
     
-        # print("Width: %d, Height: %d, FPS: %d" % (cap.get(3), cap.get(4), cap.get(5)))
+        
         while not self.is_exit:        
-            time.sleep(0.15)
+            time.sleep(self.delay)
             if  psutil.virtual_memory()[2]>90 or self.queueFrame.qsize()>self.max_que_size: #queueFrame.qsize()>max_que_size: #queueFrame.full() or
                 # print('queue/memory is full')
                 self.queueFrame.get()
@@ -162,8 +162,8 @@ class KasifClass(socketio.Namespace):
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
 
-            # frame640 = cv2.resize(frame,(1024,576))            
-            # encimg = cv2.imwrite('aa.jpg', frame640, encode_param) 
+            # frameResize = cv2.resize(frame,(1024,576))            
+            # encimg = cv2.imwrite('aa.jpg', frameResize, encode_param) 
             result, encimg = cv2.imencode('.jpg', frame, encode_param) 
             
     
