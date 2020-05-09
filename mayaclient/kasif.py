@@ -218,7 +218,7 @@ class KasifClass(socketio.Namespace):
             print(ex)
 
 
-    def FaceDetect(self,*img):
+    def FaceDetecttt(self,*img):
         frame = cv2.cvtColor(img[0], cv2.COLOR_RGB2BGR)
         try:
             (boxes, scores, classes, num_detections) = self.t1.run(frame)
