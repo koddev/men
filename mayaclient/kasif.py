@@ -21,6 +21,8 @@ import pika
 import socket
 from guid import GUID
 import socketio
+import face_recognition
+
 # from Tensor import TensorFaceDetector
 # import numpy as np
 
@@ -70,7 +72,7 @@ class KasifClass(socketio.Namespace):
 
     def __init__(self):
         self.IsConnected=False
-        self.delay=1/5
+        self.delay=1/1
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
         self.socketAddress='http://' + self.serverIP +':5551'
@@ -87,7 +89,7 @@ class KasifClass(socketio.Namespace):
         self.sio.on('connect_error',self.connect_error)
         self.sio.on('disconnect',self.disconnect)
         self.sio.on('reconnect',self.reconnect)
-        
+        # self.t1=TensorFaceDetector()
  
 
 
@@ -149,6 +151,10 @@ class KasifClass(socketio.Namespace):
                 
         
             img = webcam.get_image()
+            # img=pygame.image.load("/home/kom/code/men/mayaclient/faces.png")
+
+
+
             # os.chdir("/home/kom/Pictures")
             # pygame.image.save(img,"/home/kom/asd.jpg")
             # pil_string_image = pygame.image.tostring(img,"RGBA",False)
@@ -157,18 +163,20 @@ class KasifClass(socketio.Namespace):
             # pygame.image.save(img,"/home/kom/asd.jpg")
 
 
-            frame = pygame.surfarray.array3d(img)
-            frame = cv2.transpose(frame)
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            frame = pygame.surfarray.array3d(img).swapaxes(0,1)
+            # frame = cv2.transpose(frame)
+            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            # result, encimg = cv2.imencode('.jpg', frame, encode_param) 
 
 
             # frameResize = cv2.resize(frame,(1024,576))            
             # encimg = cv2.imwrite('aa.jpg', frameResize, encode_param) 
-            result, encimg = cv2.imencode('.jpg', frame, encode_param) 
+
+            
             
     
     
-            self.queueFrame.put(encimg)
+            self.queueFrame.put(frame)
             _frameCount+=_frameCount
     
              
@@ -219,6 +227,21 @@ class KasifClass(socketio.Namespace):
             print(e)
 
 
+    def FaceDetectDlib(self,*img):
+        # frame = cv2.cvtColor(img[0], cv2.COLOR_RGB2BGR)
+        try:
+            tt=time.time()
+            face_locations = face_recognition.face_locations(img[0], number_of_times_to_upsample=0, model="cnn")
+            print(time.time()-tt)
+            for face_location in face_locations:
+
+            # Print the location of each face in this image
+                top, right, bottom, left = face_location
+                print("A face is located at pixel location Top: {}, Left: {}, Bottom: {}, Right: {}".format(top, left, bottom, right))
+        except Exception as e:
+            print(e)
+
+
     def start(self):
         p = []
 
@@ -247,12 +270,12 @@ class KasifClass(socketio.Namespace):
                 
                 frame=self.queueFrame.get()
                 # frameResize=cv2.resize(frame,(960,540))
-                # self.FaceDetect(frameResize)
+                self.FaceDetectDlib(frame)
 
                 # self.sendImageAsync(frame)
-                sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
-                sendThread.daemon=True
-                sendThread.start()
+                # sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
+                # sendThread.daemon=True
+                # sendThread.start()
 
 
                 
