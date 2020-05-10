@@ -77,7 +77,7 @@ class KasifClass(socketio.Namespace):
         self.serverIP='62.244.197.146'
         self.socketAddress='http://' + self.serverIP +':5551'
         self.max_que_size=400
-        self.queueFrame=queue.LifoQueue(self.max_que_size+300)
+        self.queueFrame=queue.LifoQueue(self.max_que_size)
         self.is_exit=False
         pygame.camera.init()
         self.cameras = pygame.camera.list_cameras()
@@ -218,7 +218,7 @@ class KasifClass(socketio.Namespace):
             print(ex)
 
 
-    def FaceDetecttt(self,*img):
+    def FaceDetect(self,*img):
         frame = cv2.cvtColor(img[0], cv2.COLOR_RGB2BGR)
         try:
             (boxes, scores, classes, num_detections) = self.t1.run(frame)
