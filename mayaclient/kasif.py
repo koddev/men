@@ -72,7 +72,7 @@ class KasifClass(socketio.Namespace):
 
     def __init__(self):
         self.IsConnected=False
-        self.delay=1/1
+        self.delay=0
         self.tcpPort = 5551
         self.serverIP='62.244.197.146'
         self.socketAddress='http://' + self.serverIP +':5551'
@@ -165,18 +165,20 @@ class KasifClass(socketio.Namespace):
 
             frame = pygame.surfarray.array3d(img).swapaxes(0,1)
             # frame = cv2.transpose(frame)
-            # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-            # result, encimg = cv2.imencode('.jpg', frame, encode_param) 
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+            frameResize = cv2.resize(frame,(1024,576))     
+            result, encimg = cv2.imencode('.jpg', frameResize, encode_param) 
 
 
-            # frameResize = cv2.resize(frame,(1024,576))            
+                   
             # encimg = cv2.imwrite('aa.jpg', frameResize, encode_param) 
 
             
             
     
     
-            self.queueFrame.put(frame)
+            self.queueFrame.put(encimg)
             _frameCount+=_frameCount
     
              
@@ -270,12 +272,12 @@ class KasifClass(socketio.Namespace):
                 
                 frame=self.queueFrame.get()
                 # frameResize=cv2.resize(frame,(960,540))
-                self.FaceDetectDlib(frame)
+                # self.FaceDetectDlib(frame)
 
                 # self.sendImageAsync(frame)
-                # sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
-                # sendThread.daemon=True
-                # sendThread.start()
+                sendThread=threading.Thread(target=self.sendImageAsync, args=(frame,))
+                sendThread.daemon=True
+                sendThread.start()
 
 
                 
