@@ -213,6 +213,7 @@ class KasifClass(socketio.Namespace):
         # sendMsg = json.dumps(msg)
         try:
             self.sio.emit('frreq', msg)
+            time.sleep(0.1)
              
             print(str(imgSize) + ' - ' + str(self.queueFrame.qsize()) + ' memory % used:', psutil.virtual_memory()[2])
         except Exception as ex:
@@ -264,7 +265,7 @@ class KasifClass(socketio.Namespace):
                     time.sleep(0.1)
                     continue
                 while not self.IsConnected:
-                    time.sleep(5)
+                    time.sleep(1)
                     print('retry connect')
                     self.connectStart()                
 
